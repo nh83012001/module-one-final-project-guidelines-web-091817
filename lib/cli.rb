@@ -19,11 +19,11 @@ class CLI
   end
 
   def get_input
-    puts "Name a Search Term: \n "
+    puts "Name a Search Term: "
     @term = gets.chomp
     puts "Name a City: "
     @first_city = gets.chomp
-    puts "Name another City to compare:"
+    puts "Name another City to compare: "
     @second_city = gets.chomp
   end
 end

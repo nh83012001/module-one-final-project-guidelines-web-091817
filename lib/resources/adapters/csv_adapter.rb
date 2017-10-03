@@ -2,8 +2,7 @@ require 'csv'
 require 'pry'
 
 DEFAULT_COORDINATES = [40.7052799,-74.0162189]
-
-city_data = CSV.read('/Users/nicholaspaolino/Desktop/Flatiron School/Project/module-one-final-project-guidelines-web-091817/lib/resources/csvs/city_data.csv', col_sep: "$", encoding: "ISO8859-1")
+city_data = CSV.read('./lib/resources/csvs/city_data.csv', col_sep: "$", encoding: "ISO8859-1")
 
 city_data = city_data[1...city_data.count]
 populations_array, coordinates_hash = [], {}
