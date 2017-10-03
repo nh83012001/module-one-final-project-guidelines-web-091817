@@ -5,7 +5,12 @@ require 'pry'
 
 DEFAULT_COORDINATES = [40.7052799,-74.0162189]
 
+<<<<<<< HEAD
 city_data =  CSV.read('/Users/nickhall/flatIron/module-one-final-project-guidelines-web-091817/lib/city_data.csv', col_sep: "$", encoding: "ISO8859-1")
+=======
+coordinates = CSV.read('/Users/nicholaspaolino/Desktop/Flatiron School/Project/module-one-final-project-guidelines-web-091817/lib/csvs/populations.csv', col_sep: "$", encoding: "ISO8859-1")
+populations = CSV.read('/Users/nicholaspaolino/Desktop/Flatiron School/Project/module-one-final-project-guidelines-web-091817/lib/csvs/coordinates.csv', encoding: 'windows-1251:utf-8')
+>>>>>>> 2de0ec28e04c7fc595bbbb7c4d190ed5c6d14536
 
 
 city_data = city_data[1...city_data.count]
