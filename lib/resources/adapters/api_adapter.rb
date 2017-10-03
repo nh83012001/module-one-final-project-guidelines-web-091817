@@ -138,7 +138,6 @@ class Search < Adapter
   end
 
   def collect_ratings
-    binding.pry
     all_ratings
   end
 
@@ -155,7 +154,8 @@ class Search < Adapter
   end
 
   def calculate_average
-    average_rating = (sum_of_ratings / sum_of_reviews).round(2)
+    average_rating = sum_of_ratings / sum_of_reviews
+    average_rating.round(2)
   end
 
   def print_average
