@@ -36,16 +36,22 @@ class Adapter
     @location = location
   end
 
-  def self.search(term, location)
+  def self.search(term, location, price)
     url = "#{API_HOST}#{SEARCH_PATH}"
-    params = {
-      term: term,
-      location: location,
-      limit: SEARCH_LIMIT # The search return max is 50
-    }
+
+    params = set_params({term: term, location: location, price: price})
 
     response = HTTP.auth(bearer_token).get(url, params: params)
     response.parse
+  end
+
+  def self.set_params(params)
+    params = {
+      term: params[:term],
+      location: params[:location],
+      limit: SEARCH_LIMIT, # The search return max is 50
+      price: params[:price]
+    }
   end
 
   private
@@ -68,7 +74,7 @@ end
 
 class Search < Adapter
   attr_accessor :term, :location, :results
-  attr_reader :average_rating
+  attr_reader :average_rating, :price
 
   def initialize(term, location)
     @term = term
@@ -79,8 +85,32 @@ class Search < Adapter
     Search.new(term, location)
   end
 
+  def set_price(price)
+    raise "Fixnum Required" if price.class != Fixnum
+    @price = price
+  end
+
+  def all_ratings
+    ratings = []
+    # Finds all the ratings for each price
+    (1..4).to_a.each do |price|
+      set_price(price)
+      ratings << count_ratings
+    end
+    ratings.flatten
+  end
+
+  def all_reviews
+    reviews = []
+    (1..4).to_a.each do |price|
+      set_price(price)
+      reviews << count_reviews
+    end
+    reviews.flatten
+  end
+
   def search_query
-    @results = self.class.search(@term, @location)
+    @results = self.class.search(@term, @location, @price)
   end
 
   def format_results
@@ -88,25 +118,53 @@ class Search < Adapter
     results["businesses"]
   end
 
+  def print_results
+    puts "Showing results for #{term} in #{location}\n\n"
+    format_results.each do |business|
+      puts "Name: #{business["name"]}"
+      puts "Rating: #{business["rating"]}"
+      puts "Review Count: #{business["review_count"]}"
+      puts "Price: #{business["price"]}"
+    end
+    puts "\n\n"
+  end
+
+  def count_ratings
+    format_results.map {|business| business["rating"] * business["review_count"]}
+  end
+
+  def count_reviews
+    format_results.map {|business| business["review_count"]}
+  end
+
   def collect_ratings
-    format_results.map {|business| business["rating"]}
+    all_ratings
+  end
+
+  def collect_reviews
+    all_reviews
+  end
+
+  def sum_of_ratings
+    collect_ratings.reduce(:+)
+  end
+
+  def sum_of_reviews
+    collect_reviews.reduce(:+)
   end
 
   def calculate_average
-    sum_of_ratings = collect_ratings.inject(0) {|sum, n| sum + n}
-    average_rating = sum_of_ratings / collect_ratings.count
+    average_rating = (sum_of_ratings / sum_of_reviews).round(2)
   end
 
   def print_average
-    puts "#{term} in #{location} is #{calculate_average}"
+    puts "#{term.capitalize} have an average of #{calculate_average} out of #{sum_of_reviews} reviews in #{location}\n "
   end
 end
 
 # Test Case
-pizza_new_york = Search.new_query("pizza", "New York City")
-pizza_new_york.print_average
-# => Returns 4.28
+first_instance = Search.new_query("tacos", "Austin")
+first_instance.print_average
 
-pizza_boston = Search.new_query("pizza", "Boston")
-pizza_boston.print_average
-# => Returns 4.05
+second_instance = Search.new_query("tacos", "New York City")
+second_instance.print_average

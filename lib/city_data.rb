@@ -5,8 +5,8 @@ require 'pry'
 
 DEFAULT_COORDINATES = [40.7052799,-74.0162189]
 
-coordinates = CSV.read('coordinates.csv', col_sep: "$", encoding: "ISO8859-1")
-populations = CSV.read('population.csv', encoding: 'windows-1251:utf-8')
+coordinates = CSV.read('/Users/nicholaspaolino/Desktop/Flatiron School/Project/module-one-final-project-guidelines-web-091817/lib/csvs/populations.csv', col_sep: "$", encoding: "ISO8859-1")
+populations = CSV.read('/Users/nicholaspaolino/Desktop/Flatiron School/Project/module-one-final-project-guidelines-web-091817/lib/csvs/coordinates.csv', encoding: 'windows-1251:utf-8')
 
 populations = populations[1...populations.count]
 
