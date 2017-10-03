@@ -1,13 +1,12 @@
-require 'pry'
-
-class CreateCity < ActiveRecord::Migration #gets you access to database
+class CreateCities < ActiveRecord::Migration[5.1]
+  # Populates with the city_state CSV data
   def change
     create_table :cities do |t|
-      t.string :city
-      t.string :state
+      t.string :name
       t.integer :population
-      t.float :longitude
       t.float :latitude
+      t.float :longitude
+      t.integer :zip_code
       t.float :distance
     end
   end

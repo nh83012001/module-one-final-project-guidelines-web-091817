@@ -1,5 +1,3 @@
-require 'pry'
-
-class Review < ActiveRecord::Base
-  belongs_to :cities
-end
+# class Review < ActiveRecord::Base[5.1]
+#   belongs_to :cities
+# end
