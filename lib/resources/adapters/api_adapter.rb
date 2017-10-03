@@ -155,7 +155,7 @@ class Search < Adapter
 
   def calculate_average
     average_rating = sum_of_ratings / sum_of_reviews
-    average_rating.round(2)
+    average_rating.round(2) # 4.31
   end
 
   def print_average
