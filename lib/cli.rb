@@ -35,7 +35,7 @@ class CLI
   end
 
   def display
-    #end with a display of top restaurants or museums, what city it's in, distance, etc. 
+    #end with a paragraph and list of top restaurants or museums, what city it's in, distance, etc.
   end
 
 
