@@ -4,18 +4,17 @@ require 'pry'
 # require 'geokit'
 
 DEFAULT_COORDINATES = [40.7052799,-74.0162189]
-binding.pry
-city_data =  CSV.read('./city_data.csv', col_sep: "$", encoding: "ISO8859-1")
-#city_data = CSV.read('csvs/city_data.csv', encoding: 'windows-1251:utf-8')
-binding.pry
-populations = populations[1...populations.count]
 
+city_data =  CSV.read('/Users/nickhall/flatIron/module-one-final-project-guidelines-web-091817/lib/city_data.csv', col_sep: "$", encoding: "ISO8859-1")
+
+
+city_data = city_data[1...city_data.count]
 populations_array, coordinates_hash = [], {}
 
-coordinates.each do |line|
+city_data.each do |line|
   line = line.first.split(",")
-  city_state = line[4]
-  coordinates_hash[city_state] = [line[1], line[2]]
+  city_state = line[2]
+  coordinates_hash[city_state] = [line[4], line[5]]
 end
 
 def distance(loc1, loc2)
@@ -38,9 +37,11 @@ end
 not_found_counter = 0
 not_found_population_greater = 0
 
-populations.each do |line|
+city_data.each do |line|
+  line = line.first.split(",")
   city_state = line[2]
   population = line[3]
+  #binding.pry
   if coordinates_hash[city_state]
     coordinates = coordinates_hash[city_state].map {|s| s.to_f}
     distance_in_meters = distance(DEFAULT_COORDINATES, coordinates)
@@ -55,7 +56,3 @@ populations.each do |line|
     not_found_population_greater += 1 if population.to_i > 500000
   end
 end
-
-puts populations_array
-puts not_found_counter
-puts not_found_population_greater
