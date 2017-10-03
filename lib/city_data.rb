@@ -5,9 +5,9 @@ require 'pry'
 
 DEFAULT_COORDINATES = [40.7052799,-74.0162189]
 
-coordinates = CSV.read('coordinates.csv', col_sep: "$", encoding: "ISO8859-1")
-populations = CSV.read('population.csv', encoding: 'windows-1251:utf-8')
-
+coordinates = CSV.read('csvs/coordinates.csv', col_sep: "$", encoding: "ISO8859-1")
+populations = CSV.read('csvs/population.csv', encoding: 'windows-1251:utf-8')
+binding.pry
 populations = populations[1...populations.count]
 
 populations_array, coordinates_hash = [], {}
