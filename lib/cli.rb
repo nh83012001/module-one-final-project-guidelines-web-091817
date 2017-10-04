@@ -5,7 +5,6 @@ class CLI
 
   def initialize
     @city_index_hash = {}
-    @term_hash = {}
     get_user_input
     list_cities_within_population
     @city_array = populate_distances
@@ -93,15 +92,19 @@ class CLI
   def mass_yelp_search
     @city_array.each do |city|
       search = Search.new_query(@term, city)
-      city_index_hash[city] = search.calculate_average if !search.is_nil?
+      @city_index_hash[city] = {}
+      if !search.is_nil?
+        @city_index_hash[city][:avg_rating] = search.calculate_average
+        @city_index_hash[city][:term] = @term
+        @city_index_hash[city][:sum_of_reviews] = search.sum_of_reviews
+      end
     end
-    if city_index_hash == {}
+    if city_index_hash[@term] == {}
       restart
     else
-      @term_hash[@term] = city_index_hash
-      @term_hash
       best_city
       print_city
+      sort_city
     end
   end
 
@@ -111,12 +114,35 @@ class CLI
   end
 
   def best_city
-    max_value = @term_hash[@term].values.max
-    hash = @term_hash[@term].select {|city, rating| rating == max_value}
-    @best_city = hash.keys.first
+    ratings_array = @city_index_hash.map {|key, value| value[:avg_rating]}
+    max_value = ratings_array.max
+    best_city_hash = @city_index_hash.select do |city, data|
+      data[:avg_rating] == max_value
+    end
+    @best_city = best_city_hash.keys.first
+  end
+
+  def sort_city
+    ratings_array = @city_index_hash.map {|key, value| value[:avg_rating]}
+    ratings_array.sort!.reverse!
+      ratings_array.each_with_index do |rating, index|
+        hash = @city_index_hash.select {|city, data| data[:avg_rating] == rating}
+        city_name = hash.keys.first
+        sleep(2)
+        puts " \n#{index+1}. #{city_name} has an average rating of #{rating} out of #{hash[city_name][:sum_of_reviews]} reviews."
+      end
+      puts "\n"
+  end
+
+  def sum_of_reviews
+    review_array = @city_index_hash.map {|city, data| data[:sum_of_reviews]}
+    review_array.reduce(:+)
   end
 
   def print_city
+    puts " \nWe searched through #{City.query_count} cities and #{sum_of_reviews} reviews.\n "
     puts "#{@best_city} is the best city for #{@term} in #{@distance} miles with a population between #{@minimum_population} and #{@maximum_population}."
+    sleep(5)
+    #pause 10 seconds
   end
 end
