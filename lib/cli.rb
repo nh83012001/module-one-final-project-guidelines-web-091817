@@ -92,8 +92,8 @@ class CLI
   def mass_yelp_search
     @city_array.each do |city|
       search = Search.new_query(@term, city)
-      @city_index_hash[city] = {}
       if !search.is_nil?
+        @city_index_hash[city] = {}
         @city_index_hash[city][:avg_rating] = search.calculate_average
         @city_index_hash[city][:term] = @term
         @city_index_hash[city][:sum_of_reviews] = search.sum_of_reviews
@@ -114,7 +114,7 @@ class CLI
   end
 
   def best_city
-    ratings_array = @city_index_hash.map {|key, value| value[:avg_rating]}
+    ratings_array = @city_index_hash.map {|key, value| value[:avg_rating]}.compact
     max_value = ratings_array.max
     best_city_hash = @city_index_hash.select do |city, data|
       data[:avg_rating] == max_value
@@ -124,23 +124,30 @@ class CLI
 
   def sort_city
     ratings_array = @city_index_hash.map {|key, value| value[:avg_rating]}
-    ratings_array.sort!.reverse!
-      ratings_array.each_with_index do |rating, index|
-        hash = @city_index_hash.select {|city, data| data[:avg_rating] == rating}
-        city_name = hash.keys.first
-        sleep(2)
-        puts " \n#{index+1}. #{city_name} has an average rating of #{rating} out of #{hash[city_name][:sum_of_reviews]} reviews."
+    # reviews_array = @city_index_hash.map {|key, value| value[:sum_of_reviews]}.compact
+    names_array = @city_index_hash.keys
+    ratings_and_name_array = ratings_array.zip(names_array) # [4.2, "New York NY"]
+    ratings_and_name_array = ratings_and_name_array.sort_by {|rating_review| rating_review.first}.reverse # This is the rating
+    ratings_and_name_array.each_with_index do |rating_and_name, index|
+      rating = rating_and_name.first
+      name = rating_and_name.last
+      hash = @city_index_hash.select do |city, data|
+        data[:avg_rating] == rating && city == name
       end
-      puts "\n"
+      city_name = hash.keys.first
+      sleep(2) if index < 20
+      puts " \n#{index+1}. #{city_name} has an average rating of #{rating} out of #{hash[city_name][:sum_of_reviews]} reviews."
+    end
+    puts "\n"
   end
 
   def sum_of_reviews
-    review_array = @city_index_hash.map {|city, data| data[:sum_of_reviews]}
+    review_array = @city_index_hash.map {|city, data| data[:sum_of_reviews]}.compact
     review_array.reduce(:+)
   end
 
   def print_city
-    puts " \nWe searched through #{City.query_count} cities and #{sum_of_reviews} reviews.\n "
+    puts " \nWe searched through #{@city_index_hash.count} cities and #{sum_of_reviews} reviews.\n "
     puts "#{@best_city} is the best city for #{@term} in #{@distance} miles with a population between #{@minimum_population} and #{@maximum_population}."
     sleep(5)
     #pause 10 seconds
