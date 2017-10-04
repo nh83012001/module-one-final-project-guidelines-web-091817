@@ -60,12 +60,6 @@ class CLI
     City.populate_distances
   end
 
-  # def test_data
-  #   @city_array = ["Austin TX", "Boston MA", "New York NY"]
-  #   @term = "pizza"
-  #   mass_yelp_search
-  # end
-
   def mass_yelp_search
     @city_array.each do |city|
       search = Search.new_query(@term, city)
