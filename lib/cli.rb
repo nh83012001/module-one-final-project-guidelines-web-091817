@@ -46,7 +46,7 @@ class CLI
   end
 
   def self.welcome
-    puts "Hi and Welcome to CityYelp.\n"
+    puts " \nHi and Welcome to CityYelp.\n"
     CLI.new
   end
 
@@ -105,7 +105,13 @@ class CLI
       best_city
       print_city
       sort_city
+      top_ten_in_best_city
     end
+  end
+
+  def top_ten_in_best_city
+    search = Search.new_query(@term, @best_city)
+    search.print_results(10)
   end
 
   def restart

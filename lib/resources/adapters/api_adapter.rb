@@ -119,13 +119,15 @@ class Search < Adapter
     results["businesses"]
   end
 
-  def print_results
+  def print_results(num)
     puts "Showing results for #{term} in #{location}\n\n"
-    format_results.each do |business|
+    format_results.each_with_index do |business, index|
+      puts "##{index + 1}:"
       puts "Name: #{business["name"]}"
       puts "Rating: #{business["rating"]}"
       puts "Review Count: #{business["review_count"]}"
-      puts "Price: #{business["price"]}"
+      puts "Price: #{business["price"]}\n "
+      break if index == num - 1
     end
     puts "\n\n"
   end
