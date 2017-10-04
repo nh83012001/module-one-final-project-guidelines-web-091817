@@ -14,6 +14,7 @@ require 'pry'
 require 'json'
 require 'http'
 require 'optparse'
+require 'pry'
 
 # Authentication for the Yelp API
 CLIENT_ID = "LvnmmaOiGVGD8KJWl3F9Jw"
@@ -151,6 +152,10 @@ class Search < Adapter
 
   def sum_of_reviews
     collect_reviews.reduce(:+)
+  end
+
+  def is_nil?
+    !sum_of_ratings || !sum_of_reviews
   end
 
   def calculate_average

@@ -1,24 +1,54 @@
+require 'pry'
+
 class CLI
   attr_accessor :city_array, :term, :city, :city_index_hash, :distance, :maximum_population, :minimum_population
-
-  @@term_hash = {}
 
   def initialize
     @city_index_hash = {}
     @term_hash = {}
-    # get_city
-    # populate_distances
+    get_user_input
+    list_cities_within_population
+    @city_array = populate_distances
+    approve_query_length
+  end
+
+  def list_cities_within_population
+    City.list_cities_within_population(@minimum_population, @maximum_population)
+  end
+
+  def approve_query_length
+    puts "There are #{City.query_count} cities that are within #{distance} miles of #{city} that are between #{minimum_population} and #{maximum_population} people."
+    puts "Would you like to proceed with the search? Type 'Y' or 'N'."
+    user_response = gets.chomp
+      if user_response == "Y"
+        execute_yelp_search
+      elsif user_response == "N"
+        CLI.welcome
+      else
+        user_response = gets.chomp
+      end
+  end
+
+  def limit_query
+    # if "N", how many would you like to limit it to? 50 cities
+    #   Would you like to have the 10 biggest, smallest, closest, or furthest
+    #   Would you lik
+  end
+
+  def execute_yelp_search
+    mass_yelp_search
+  end
+
+  def get_user_input
+    get_city
     get_term
     get_population
     get_distance_radius
-    @city_array = find_cities
-    mass_yelp_search
-    best_city
-    print_city
   end
 
   def self.welcome
-    new_search = CLI.new
+    puts "Hi and Welcome to CityYelp.\n"
+    CLI.new
   end
 
   def add_array(city_array)
@@ -45,28 +75,39 @@ class CLI
     @distance = @distance.to_i
   end
 
-  def find_cities
-    City.list_cities(@distance, @minimum_population, @maximum_population)
-  end
+  # def find_cities
+  #   City.list_cities(@distance, @minimum_population, @maximum_population)
+  # end
 
   def get_city
     puts "Set your city: "
     @city = gets.chomp
-    # City.find_by(name: @city)
     City.set_starting_city(@city)
+    CLI.welcome if !City.city
   end
 
   def populate_distances
-    City.populate_distances
+    City.populate_distances(@distance)
   end
 
   def mass_yelp_search
     @city_array.each do |city|
       search = Search.new_query(@term, city)
-      city_index_hash[city] = search.calculate_average
+      city_index_hash[city] = search.calculate_average if !search.is_nil?
     end
-    @term_hash[@term] = city_index_hash
-    @term_hash
+    if city_index_hash == {}
+      restart
+    else
+      @term_hash[@term] = city_index_hash
+      @term_hash
+      best_city
+      print_city
+    end
+  end
+
+  def restart
+    puts "We're sorry, your search didn't return any results. We are going to restart.\n\n\n"
+    CLI.welcome
   end
 
   def best_city
