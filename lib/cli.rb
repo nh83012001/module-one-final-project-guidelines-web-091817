@@ -163,8 +163,6 @@ class CLI
         )
       end
     end
-
-    # Create row in ratings table using city_index_hash
   end
 
   def top_ten_in_best_city
