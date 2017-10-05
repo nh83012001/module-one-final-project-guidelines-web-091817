@@ -1,14 +1,25 @@
 require 'pry'
 
 class CLI
-  attr_accessor :city_array, :term, :city, :city_index_hash, :distance, :maximum_population, :minimum_population
+  attr_accessor :city_array, :city_index_hash
+  attr_accessor :distance, :maximum_population, :minimum_population, :term, :city
 
   def initialize
     @city_index_hash = {}
     get_user_input
     list_cities_within_population
-    @city_array = populate_distances
+    add_array(populate_distances)
     approve_query_length
+  end
+
+  def self.welcome
+    puts " \nHi and Welcome to CityYelp.\n "
+    CLI.new
+  end
+
+  def restart
+    puts "We're sorry, your search didn't return any results. We are going to restart.\n\n\n"
+    CLI.new
   end
 
   def list_cities_within_population
@@ -20,22 +31,12 @@ class CLI
     puts "Would you like to proceed with the search? Type 'Y' or 'N'."
     user_response = gets.chomp
       if user_response == "Y"
-        execute_yelp_search
+        mass_yelp_search
       elsif user_response == "N"
-        CLI.welcome
+        CLI.new
       else
         user_response = gets.chomp
       end
-  end
-
-  def limit_query
-    # if "N", how many would you like to limit it to? 50 cities
-    #   Would you like to have the 10 biggest, smallest, closest, or furthest
-    #   Would you lik
-  end
-
-  def execute_yelp_search
-    mass_yelp_search
   end
 
   def get_user_input
@@ -43,11 +44,6 @@ class CLI
     get_term
     get_population
     get_distance_radius
-  end
-
-  def self.welcome
-    puts " \nHi and Welcome to CityYelp.\n"
-    CLI.new
   end
 
   def add_array(city_array)
@@ -74,15 +70,11 @@ class CLI
     @distance = @distance.to_i
   end
 
-  # def find_cities
-  #   City.list_cities(@distance, @minimum_population, @maximum_population)
-  # end
-
   def get_city
     puts "Set your city: "
     @city = gets.chomp
     City.set_starting_city(@city)
-    CLI.welcome if !City.city
+    CLI.new if !City.city
   end
 
   def populate_distances
@@ -99,12 +91,13 @@ class CLI
         @city_index_hash[city][:sum_of_reviews] = search.sum_of_reviews
       end
     end
+    binding.pry
     if city_index_hash[@term] == {}
       restart
     else
-      best_city
+      find_best_city
       print_city
-      sort_city
+      sort_cities
       top_ten_in_best_city
     end
   end
@@ -114,12 +107,7 @@ class CLI
     search.print_results(10)
   end
 
-  def restart
-    puts "We're sorry, your search didn't return any results. We are going to restart.\n\n\n"
-    CLI.welcome
-  end
-
-  def best_city
+  def find_best_city
     ratings_array = @city_index_hash.map {|key, value| value[:avg_rating]}.compact
     max_value = ratings_array.max
     best_city_hash = @city_index_hash.select do |city, data|
@@ -128,7 +116,7 @@ class CLI
     @best_city = best_city_hash.keys.first
   end
 
-  def sort_city
+  def sort_cities
     ratings_array = @city_index_hash.map {|key, value| value[:avg_rating]}
     # reviews_array = @city_index_hash.map {|key, value| value[:sum_of_reviews]}.compact
     names_array = @city_index_hash.keys
@@ -156,6 +144,5 @@ class CLI
     puts " \nWe searched through #{@city_index_hash.count} cities and #{sum_of_reviews} reviews.\n "
     puts "#{@best_city} is the best city for #{@term} in #{@distance} miles with a population between #{@minimum_population} and #{@maximum_population}."
     sleep(5)
-    #pause 10 seconds
   end
 end
