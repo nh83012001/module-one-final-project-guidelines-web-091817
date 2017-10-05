@@ -31,6 +31,8 @@ class CLI
     puts " \nWhich city would you like to lookup existing ratings for?\n "
     city_choice = gets.chomp
     Rating.list_city_ratings(city_choice)
+    sleep(5)
+    self.welcome
   end
 
   def restart
@@ -168,6 +170,7 @@ class CLI
   def top_ten_in_best_city
     search = Search.new_query(@term, @best_city)
     search.print_results(5)
+    self.class.welcome
   end
 
   def find_best_city
@@ -192,11 +195,11 @@ class CLI
         data[:avg_rating] == rating && city == name
       end
       city_name = hash.keys.first
-      sleep(2) if index < 20
+      sleep(1) if index < 20
       puts " \n#{index+1}. #{city_name} has an average rating of #{rating} out of #{hash[city_name][:sum_of_reviews]} reviews."
     end
     puts "\n"
-    sleep(10)
+    sleep(5)
   end
 
   def sum_of_reviews
@@ -208,7 +211,7 @@ class CLI
     @spinner.stop('THOUGHT!')
     puts " \nWe searched through #{@city_index_hash.count} cities and #{sum_of_reviews} reviews.\n "
     puts "#{@best_city} is the best city for #{@term} in #{@distance} miles with a population between #{@minimum_population} and #{@maximum_population}."
-    sleep(5)
+    sleep(3)
 
   end
 
