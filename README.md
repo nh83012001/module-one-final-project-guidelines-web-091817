@@ -1,6 +1,11 @@
 # Module One Final Project Guidelines
 
 ## CityYelp
+CityYelp is a command line interface application that searches Yelp for cities within a distance and population range for a specific term. CityYelp will output the cities with the highest rating average for your search term.
+
+For example, you could search for the best small cities within 100 miles of NYC for tacos. CityYelp will go through all of the taco places for each of the small cities around NYC and find an average rating. It'll sort the cities by best average rating for tacos and return them in order. After that, it'll return the top 5 best matches for the city that had the highest overall average.
+
+Every time you make a search query with CityYelp, it will save the results for each city. You'll be able to lookup the average ratings for all of the search terms for that city. For example, you could search the Texas area for the city with the best tacos, ice cream, and museums. It will save the results and you could later lookup Dallas in the ratings table to find its ratings for tacos, ice cream, and museums.
 
 ### Installation
 
@@ -17,38 +22,131 @@ $ bundle install
 $ ruby bin/run.rb
 ```
 
-5. Soak in the awesomeness
+### Usage
+When you start CityYelp, you enter a world where your desires and dreams come true and anything you want is at your fingertips #anythingispossible #cityyelpandyoullneednohelp
 
-<!--
-### Option Two - Command Line CRUD App
+Below is an example interaction. The user will have two choices when they start the application. They can either:
 
-1. Access a Sqlite3 Database using ActiveRecord.
-2. You should have a minimum of three models.
-3. You should build out a CLI to give your user full CRUD ability for at least one of your resources. For example, build out a command line To-Do list. A user should be able to create a new to-do, see all todos, update a todo item, and delete a todo. Todos can be grouped into categories, so that a to-do has many categories and categories have many to-dos.
-4. Use good OO design patterns. You should have separate models for your runner and CLI interface.
+```bash
+1. New Search
+2. Lookup Existing City
+```
 
-### Brainstorming and Proposing a Project Idea
+Search is the primary use of CityYelp. With it you can search for the city with the highest average for a search term.
 
-Projects need to be approved prior to launching into them, so take some time to brainstorm project options that will fulfill the requirements above.  You must have a minimum of four [user stories](https://en.wikipedia.org/wiki/User_story) to help explain how a user will interact with your app.  A user story should follow the general structure of `"As a <role>, I want <goal/desire> so that <benefit>"`. In example, if we were creating an app to randomly choose nearby restaurants on Yelp, we might write:
+When you select the New Search option, CityYelp will ask you for a city/town to set as your origin location.
 
-* As a user, I want to be able to enter my name to retrieve my records
-* As a user, I want to enter a location and be given a random nearby restaurant suggestion
-* As a user, I should be able to reject a suggestion and not see that restaurant suggestion again
-* As a user, I want to be able to save to and retrieve a list of favorite restaurant suggestions
+```bash
+Set your city:
+New York NY
+```
 
-## Instructions
+CityYelp will lookup all of the cities around that point. The city must be formatted with state at the end of it so it looks like the above query.
 
-1. Fork and clone this repository.
-2. Build your application. Make sure to commit early and commit often. Commit messages should be meaningful (clearly describe what you're doing in the commit) and accurate (there should be nothing in the commit that doesn't match the description in the commit message). Good rule of thumb is to commit every 3-7 mins of actual coding time. Most of your commits should have under 15 lines of code and a 2 line commit is perfectly acceptable.
-3. Make sure to create a good README.md with a short description, install instructions, a contributors guide and a link to the license for your code.
-4. Make sure your project checks off each of the above requirements.
-5. Prepare a video demo (narration helps!) describing how a user would interact with your working project.
-    * The video should:
-      - Have an overview of your project.(2 minutes max)
-6. Prepare a presentation to follow your video.(3 minutes max)
-    * Your presentation should:
-      - Describe something you struggled to build, and show us how you ultimately implemented it in your code.
-      - Discuss 3 things you learned in the process of working on this project.
-      - Address, if anything, what you would change or add to what you have today?
-      - Present any code you would like to highlight.   
-7. *OPTIONAL, BUT RECOMMENDED*: Write a blog post about the project and process. -->
+Next, you need to enter a search term. This can be any venue type that you ordinarily search on Yelp.
+
+```bash
+Give a term to search:
+tacos
+```
+
+The search term could be food like "tacos" or "pizza" or services like "car repair."
+
+After this, CityYelp will give you options for the population size of the city/town you're looking up.
+
+```bash
+Set a population range:
+1. One gas station (with a broken bathroom) and a Carls Jr. with an arcade: (< 1,000)
+2. Town: (1,000 to 50,000)
+3. Small City: (50,000 to 250,000)
+4. City: (250,000 to 1,000,000)
+5. Large City: (1,000,000+)
+```
+Select the number of the size parameter you'd like.
+
+Next, enter your search radius. This is the number of miles to search around your origin city.
+
+```bash
+Set a distance radius:
+500
+```
+
+After that, CityYelp will return a prompt indicating how many cities are currently within your parameters. If you find this to be too many or too few, you may write "N" to reselect your search parameters. Otherwise, write "Y"
+
+```bash
+There are 9 cities that are within 5000 miles of New York NY that are between 1000000 and 20000000 people.
+Would you like to proceed with the search? Type 'Y' or 'N'.
+```
+
+CityYelp will make an API request to Yelp and process all of the data. After its retrieved the averages, it will print the number of cities and reviews it has looked through.
+
+```bash
+We searched through 9 cities and 455712 reviews.
+```
+
+After this, CityYelp prints the city that had the highest average rating for your search term within the parameters you specified.
+
+```bash
+Los Angeles CA is the best city for tacos in 5000 miles with a population between 1000000 and 20000000.
+````
+
+CityYelp will print an ordered list by rating of your search criteria.
+
+````bash
+1. Los Angeles CA has an average rating of 4.2885 out of 89416 reviews.
+
+2. Phoenix AZ has an average rating of 4.2472 out of 34608 reviews.
+
+3. San Diego CA has an average rating of 4.2252 out of 130624 reviews.
+````
+
+Lastly, CityYelp will return what Yelp has deemed the best matches within the highest rated city of your query. Below is an example for tacos within Los Angeles CA.
+
+
+````bash
+#1:
+Name: Ave 26 Taco Stand
+Rating: 5.0
+Review Count: 523
+Price: $
+
+#2:
+Name: Taqueria La Plebe and More
+Rating: 4.5
+Review Count: 52
+Price: $
+````
+
+CityYelp then saves the results for average ratings in each city. If you want to find out the ratings a city has for terms already searched, choose the Lookup Existing City option at the first prompt.
+
+````bash
+1. New Search
+2. Lookup Existing City
+````
+
+Just type in the city you would like to search, and CityYelp will return all of the previously searched terms for that city along with their average ratings and number of reviews.
+
+````bash
+Which city would you like to lookup existing ratings for?
+Dallas TX
+````
+
+CityYelp will then return its search terms sorted by highest average rating. In the below example you can see that the highest average rating for Dallas is for the search term Car Repair.
+
+````bash
+Dallas TX
+
+1. Car Repair
+Average Rating: 4.4731
+Sum of Reviews: 372
+
+
+2. Arcades
+Average Rating: 4.3639
+Sum of Reviews: 588
+
+
+3. Ice Cream
+Average Rating: 4.1963
+Sum of Reviews: 23920
+````

@@ -20,7 +20,7 @@ class CLI
   def self.welcome
     puts " \nHi and Welcome to CityYelp.\n "
     puts " \nWould you like to make a search or lookup an existing city?\n "
-    puts " \n1. Search"
+    puts " \n1. New Search"
     puts "2. Lookup Existing City\n "
     choice = gets.chomp
     CLI.new if choice.to_i == 1
@@ -126,7 +126,7 @@ class CLI
 
   def mass_yelp_search
     puts "\n"
-    @spinner = TTY::Spinner.new("[:spinner] Thinking.....", format: :pulse_2)
+    @spinner = TTY::Spinner.new(":spinner :spinner :spinner :spinner :spinner ......THINKING...... :spinner :spinner :spinner :spinner :spinner", format: :dots)
     @spinner.auto_spin
     @city_array.each do |city|
       search = Search.new_query(@term, city)
@@ -205,7 +205,7 @@ class CLI
   end
 
   def print_city
-    @spinner.stop('Done!')
+    @spinner.stop('THOUGHT!')
     puts " \nWe searched through #{@city_index_hash.count} cities and #{sum_of_reviews} reviews.\n "
     puts "#{@best_city} is the best city for #{@term} in #{@distance} miles with a population between #{@minimum_population} and #{@maximum_population}."
     sleep(5)

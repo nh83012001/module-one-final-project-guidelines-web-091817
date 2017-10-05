@@ -3,7 +3,7 @@ require 'pry'
 class Rating < ActiveRecord::Base
   def self.list_city_ratings(city)
     id = City.find_by(name: city).id
-    city_ratings = Rating.where("city_id = ?", id)
+    city_ratings = Rating.where("city_id = ?", id).sort_by {|city| city[:avg_rating]}.reverse
     city_ratings.each_with_index do |data, index|
       puts " \n#{index + 1}. #{data[:term].titleize}"
       puts "Average Rating: #{data[:avg_rating]}"
