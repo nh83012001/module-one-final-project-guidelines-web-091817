@@ -10,7 +10,3 @@ gem 'http'
 gem 'i18n'
 gem 'tty'
 gem 'tty-spinner'
-<<<<<<< HEAD
-gem 'figaro'
-=======
->>>>>>> e730c18... added spinner
