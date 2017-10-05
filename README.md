@@ -56,7 +56,7 @@ After this, CityYelp will give you options for the population size of the city/t
 
 ```bash
 Set a population range:
-1. One gas station (with a broken bathroom) and a Carls Jr. with an arcade: (< 1,000)
+1. Small Town (< 1,000)
 2. Town: (1,000 to 50,000)
 3. Small City: (50,000 to 250,000)
 4. City: (250,000 to 1,000,000)

@@ -75,7 +75,7 @@ class CLI
 
   def set_population_size
     puts " \nSet a population range:"
-    puts "1. One gas station (with a broken bathroom) and a Carl's Jr. with an arcade: (< 1,000)"
+    puts "1. Small Town (< 1,000)"
     puts "2. Town: (1,000 to 50,000)"
     puts "3. Small City: (50,000 to 250,000)"
     puts "4. City: (250,000 to 1,000,000)"

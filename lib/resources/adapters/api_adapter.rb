@@ -17,8 +17,12 @@ require 'optparse'
 require 'pry'
 
 # Authentication for the Yelp API
-CLIENT_ID = "LvnmmaOiGVGD8KJWl3F9Jw"
-CLIENT_SECRET = "o2npCNvvrQxpPJ33KosFKFdZ0ZnWCZQqFoPlu1k5SFtR0SOR2GpypziSXKe2XkeV"
+
+#CLIENT_ID = "LvnmmaOiGVGD8KJWl3F9Jw"
+#CLIENT_SECRET = "o2npCNvvrQxpPJ33KosFKFdZ0ZnWCZQqFoPlu1k5SFtR0SOR2GpypziSXKe2XkeV"
+
+CLIENT_ID = ENV['YELP_API_ID']
+CLIENT_SECRET = ENV['YELP_API_SECRET']
 
 # Constants, do not change these
 API_HOST = "https://api.yelp.com"
