@@ -91,7 +91,6 @@ class CLI
         @city_index_hash[city][:sum_of_reviews] = search.sum_of_reviews
       end
     end
-    binding.pry
     if city_index_hash[@term] == {}
       restart
     else

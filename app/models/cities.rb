@@ -1,5 +1,5 @@
 class City < ActiveRecord::Base
-  # has_many :reviews
+  has_many :ratings
 
   def self.set_starting_city(city) # Raise error if not found
     @@city = City.find_by(name: city)
