@@ -5,5 +5,6 @@ class CreateRatings < ActiveRecord::Migration[5.1]
       t.string :term
       t.float :avg_rating
       t.integer :sum_of_reviews
+    end
   end
 end

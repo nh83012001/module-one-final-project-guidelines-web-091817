@@ -9,3 +9,6 @@ tmp
 *.iml
 *.log
 *.swp
+
+# Ignore application configuration
+/config/application.yml

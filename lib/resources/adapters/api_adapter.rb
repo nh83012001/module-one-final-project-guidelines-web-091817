@@ -127,6 +127,7 @@ class Search < Adapter
       puts "Rating: #{business["rating"]}"
       puts "Review Count: #{business["review_count"]}"
       puts "Price: #{business["price"]}\n "
+      sleep(1)
       break if index == num - 1
     end
     puts "\n\n"

@@ -1,6 +1,10 @@
 require 'pry'
 require 'tty-spinner'
 
+# Removes logging text
+old_logger = ActiveRecord::Base.logger
+ActiveRecord::Base.logger = nil
+
 class CLI
   attr_accessor :city_array, :city_index_hash
   attr_accessor :distance, :maximum_population, :minimum_population, :term, :city
@@ -15,7 +19,18 @@ class CLI
 
   def self.welcome
     puts " \nHi and Welcome to CityYelp.\n "
-    CLI.new
+    puts " \nWould you like to make a search or lookup an existing city?\n "
+    puts " \n1. Search"
+    puts "2. Lookup Existing City\n "
+    choice = gets.chomp
+    CLI.new if choice.to_i == 1
+    lookup_city_ratings if choice.to_i == 2
+  end
+
+  def self.lookup_city_ratings
+    puts " \nWhich city would you like to lookup existing ratings for?\n "
+    city_choice = gets.chomp
+    Rating.list_city_ratings(city_choice)
   end
 
   def restart
@@ -28,7 +43,7 @@ class CLI
   end
 
   def approve_query_length
-    puts "There are #{City.query_count} cities that are within #{distance} miles of #{city} that are between #{minimum_population} and #{maximum_population} people."
+    puts " \nThere are #{City.query_count} cities that are within #{distance} miles of #{city} that are between #{minimum_population} and #{maximum_population} people."
     puts "Would you like to proceed with the search? Type 'Y' or 'N'."
     user_response = gets.chomp
       if user_response == "Y"
@@ -43,7 +58,7 @@ class CLI
   def get_user_input
     get_city
     get_term
-    get_population
+    set_population_size
     get_distance_radius
   end
 
@@ -52,8 +67,35 @@ class CLI
   end
 
   def get_term
-    puts "Give a term to search: "
+    puts " \nGive a term to search: "
     @term = gets.chomp
+  end
+
+  def set_population_size
+    puts " \nSet a population range:"
+    puts "1. One gas station (with a broken bathroom) and a Carl's Jr. with an arcade: (< 1,000)"
+    puts "2. Town: (1,000 to 50,000)"
+    puts "3. Small City: (50,000 to 250,000)"
+    puts "4. City: (250,000 to 1,000,000)"
+    puts "5. Large City: (1,000,000+)\n "
+    input = gets.chomp
+    case input.to_i
+    when 1
+      @minimum_population = 0
+      @maximum_population = 1000
+    when 2
+      @minimum_population = 1000
+      @maximum_population = 50000
+    when 3
+      @minimum_population = 50000
+      @maximum_population = 250000
+    when 4
+      @minimum_population = 250000
+      @maximum_population = 1000000
+    when 5
+      @minimum_population = 1000000
+      @maximum_population = 20000000
+    end
   end
 
   def get_population
@@ -66,13 +108,13 @@ class CLI
   end
 
   def get_distance_radius
-    puts "Set a distance radius: "
+    puts " \nSet a distance radius: "
     @distance = gets.chomp
     @distance = @distance.to_i
   end
 
   def get_city
-    puts "Set your city: "
+    puts " \nSet your city: "
     @city = gets.chomp
     City.set_starting_city(@city)
     CLI.new if !City.city
@@ -83,6 +125,7 @@ class CLI
   end
 
   def mass_yelp_search
+    puts "\n"
     @spinner = TTY::Spinner.new("[:spinner] Thinking.....", format: :pulse_2)
     @spinner.auto_spin
     @city_array.each do |city|
@@ -97,6 +140,7 @@ class CLI
     if city_index_hash[@term] == {}
       restart
     else
+      update_ratings_table # Updates the ratings table
       find_best_city
       print_city
       sort_cities
@@ -104,9 +148,26 @@ class CLI
     end
   end
 
+  def update_ratings_table
+    # Use key to find city_id from cities table
+    @city_index_hash.each do |city, data|
+      id = City.find_by(name: city).id
+      if Rating.where("city_id = ? and term = ?", id, data[:term]) == []
+        Rating.create(
+          city_id: id,
+          avg_rating: data[:avg_rating],
+          sum_of_reviews: data[:sum_of_reviews],
+          term: data[:term]
+        )
+      end
+    end
+
+    # Create row in ratings table using city_index_hash
+  end
+
   def top_ten_in_best_city
     search = Search.new_query(@term, @best_city)
-    search.print_results(10)
+    search.print_results(5)
   end
 
   def find_best_city
@@ -135,6 +196,7 @@ class CLI
       puts " \n#{index+1}. #{city_name} has an average rating of #{rating} out of #{hash[city_name][:sum_of_reviews]} reviews."
     end
     puts "\n"
+    sleep(10)
   end
 
   def sum_of_reviews

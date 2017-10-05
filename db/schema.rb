@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 1) do
+ActiveRecord::Schema.define(version: 2) do
 
   create_table "cities", force: :cascade do |t|
     t.string "name"
@@ -19,6 +19,13 @@ ActiveRecord::Schema.define(version: 1) do
     t.float "longitude"
     t.integer "zip_code"
     t.float "distance"
+  end
+
+  create_table "ratings", force: :cascade do |t|
+    t.integer "city_id"
+    t.string "term"
+    t.float "avg_rating"
+    t.integer "sum_of_reviews"
   end
 
 end
