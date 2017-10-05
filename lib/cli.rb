@@ -1,4 +1,5 @@
 require 'pry'
+require 'tty-spinner'
 
 class CLI
   attr_accessor :city_array, :city_index_hash
@@ -82,6 +83,8 @@ class CLI
   end
 
   def mass_yelp_search
+    @spinner = TTY::Spinner.new("[:spinner] Thinking.....", format: :pulse_2)
+    @spinner.auto_spin
     @city_array.each do |city|
       search = Search.new_query(@term, city)
       if !search.is_nil?
@@ -140,8 +143,11 @@ class CLI
   end
 
   def print_city
+    @spinner.stop('Done!')
     puts " \nWe searched through #{@city_index_hash.count} cities and #{sum_of_reviews} reviews.\n "
     puts "#{@best_city} is the best city for #{@term} in #{@distance} miles with a population between #{@minimum_population} and #{@maximum_population}."
     sleep(5)
+
   end
+
 end

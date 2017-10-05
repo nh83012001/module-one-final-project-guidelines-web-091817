@@ -8,3 +8,5 @@ gem "require_all"
 gem 'json'
 gem 'http'
 gem 'i18n'
+gem 'tty'
+gem 'tty-spinner'
