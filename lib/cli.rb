@@ -1,9 +1,12 @@
 require 'pry'
 require 'tty-spinner'
+<<<<<<< HEAD
 
 # Removes logging text
 old_logger = ActiveRecord::Base.logger
 ActiveRecord::Base.logger = nil
+=======
+>>>>>>> e730c18... added spinner
 
 class CLI
   attr_accessor :city_array, :city_index_hash
@@ -127,8 +130,12 @@ class CLI
   end
 
   def mass_yelp_search
+<<<<<<< HEAD
     puts "\n"
     @spinner = TTY::Spinner.new(":spinner :spinner :spinner :spinner :spinner ......THINKING...... :spinner :spinner :spinner :spinner :spinner", format: :dots)
+=======
+    @spinner = TTY::Spinner.new("[:spinner] Thinking.....", format: :pulse_2)
+>>>>>>> e730c18... added spinner
     @spinner.auto_spin
     @city_array.each do |city|
       search = Search.new_query(@term, city)
@@ -206,10 +213,17 @@ class CLI
   end
 
   def print_city
+<<<<<<< HEAD
     @spinner.stop('THOUGHT!')
     puts " \nWe searched through #{@city_index_hash.count} cities and #{sum_of_reviews} reviews.\n "
     puts "#{@best_city} is the best city for #{@term} in #{@distance} miles with a population between #{@minimum_population} and #{@maximum_population}."
     sleep(3)
+=======
+    @spinner.stop('Done!')
+    puts " \nWe searched through #{@city_index_hash.count} cities and #{sum_of_reviews} reviews.\n "
+    puts "#{@best_city} is the best city for #{@term} in #{@distance} miles with a population between #{@minimum_population} and #{@maximum_population}."
+    sleep(5)
+>>>>>>> e730c18... added spinner
 
   end
 
